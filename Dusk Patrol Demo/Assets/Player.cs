@@ -34,6 +34,10 @@ public class Player : MonoBehaviour {
 		if (Input.GetKey (KeyCode.D)) { //Dright
 			movement += new Vector2(1, 0);
 		}
+
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			shootBullet ();
+		}
 		GetComponent<Rigidbody2D> ().velocity = movement * speed;
 	}
 
@@ -43,7 +47,18 @@ public class Player : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other) {
 		Bullet bscript = other.gameObject.GetComponent<Bullet> ();
-		this.take (bscript.damage);
-		bscript.die ();
+		if (bscript) {
+			this.take (bscript.damage);
+			bscript.die ();
+		}
+	}
+
+	void shootBullet() {
+		GameObject bulletPrefab = Resources.Load ("Bullet") as GameObject;
+		GameObject newBullet = GameObject.Instantiate (bulletPrefab);
+		newBullet.transform.position = gameObject.transform.position + new Vector3 (0, 1, 0);
+		Bullet bscript = newBullet.GetComponent<Bullet> ();
+		bscript.xspeed = 0;
+		bscript.yspeed = 2;
 	}
 }
